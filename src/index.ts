@@ -1,3 +1,6 @@
+export { ChatwootClient };
+export type { ChatwootClientConfig };
+
 export { ApiError } from "./core/ApiError";
 export { CancelablePromise, CancelError } from "./core/CancelablePromise";
 export { ChatwootAPI } from "./core/ChatwootAPI";
@@ -83,25 +86,42 @@ import { Teams } from "./services/Teams";
 import { Users } from "./services/platform/Users";
 import { Webhooks } from "./services/Webhooks";
 
+export interface ChatwootClientConfig {
+  config: ChatwootAPIConfig;
+}
+
 import { ChatwootAPIConfig } from "./core/ChatwootAPI";
 
-export default class ChatwootClient {
-    private chatwootAPI: ChatwootAPIConfig;
+export class ChatwootClient {
+    private readonly chatwootAPI: ChatwootAPIConfig;
+    public readonly client: {
+        contacts: ContactsApi;
+        conversations: ConversationsApi;
+        messages: MessagesApi;
+    };
+    public readonly platform: {
+        accounts: Accounts;
+        accountUsers: AccountUsers;
+        agentBots: AgentBots;
+        users: Users;
+    };
 
-    constructor({ config }: { config: ChatwootAPIConfig }) {
-        this.chatwootAPI = config;
-
+    constructor(config: ChatwootClientConfig) {
+        this.chatwootAPI = config.config;
+        
+        // Inicialização do client
         this.client = {
-            contacts: new ContactsApi({ config: config }),
-            conversations: new ConversationsApi({ config: config }),
-            messages: new MessagesApi({ config: config }),
+            contacts: new ContactsApi({ config: this.chatwootAPI }),
+            conversations: new ConversationsApi({ config: this.chatwootAPI }),
+            messages: new MessagesApi({ config: this.chatwootAPI })
         };
 
+        // Inicialização do platform
         this.platform = {
-            accounts: new Accounts({ config: config }),
-            accountUsers: new AccountUsers({ config: config }),
-            agentBots: new AgentBots({ config: config }),
-            users: new Users({ config: config }),
+            accounts: new Accounts({ config: this.chatwootAPI }),
+            accountUsers: new AccountUsers({ config: this.chatwootAPI }),
+            agentBots: new AgentBots({ config: this.chatwootAPI }),
+            users: new Users({ config: this.chatwootAPI })
         };
 
         this.accountAgentBots = new AccountAgentBots({ config: config });
