@@ -131,9 +131,6 @@ export default class ChatwootClient {
         this.webhooks = new Webhooks({ config: config });
     }
 
-    public client = {};
-    public platform = {};
-
     public accountAgentBots: AccountAgentBots;
     public agentBots: AgentBots;
     public agents: Agents;
