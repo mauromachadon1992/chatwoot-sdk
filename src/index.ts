@@ -87,6 +87,8 @@ import { ChatwootAPIConfig } from "./core/ChatwootAPI";
 
 export default class ChatwootClient {
     private chatwootAPI: ChatwootAPIConfig;
+    public readonly client;
+    public readonly platform;
 
     constructor({ config }: { config: ChatwootAPIConfig }) {
         this.chatwootAPI = config;
